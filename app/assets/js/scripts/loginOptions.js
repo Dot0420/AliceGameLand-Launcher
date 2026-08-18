@@ -1,7 +1,7 @@
 const loginOptionsCancelContainer = document.getElementById('loginOptionCancelContainer')
 const loginOptionMicrosoft = document.getElementById('loginOptionMicrosoft')
-const loginOptionMojang = document.getElementById('loginOptionMojang')
 const loginOptionsCancelButton = document.getElementById('loginOptionCancelButton')
+const { AZURE_CLIENT_ID } = require('./assets/js/ipcconstants')
 
 let loginOptionsCancellable = false
 
@@ -19,20 +19,21 @@ function loginOptionsCancelEnabled(val){
 }
 
 loginOptionMicrosoft.onclick = (e) => {
+    if(AZURE_CLIENT_ID === '00000000-0000-0000-0000-000000000000'){
+        setOverlayContent(
+            Lang.queryJS('loginOptions.azureNotConfiguredTitle'),
+            Lang.queryJS('loginOptions.azureNotConfiguredDescription'),
+            Lang.queryJS('landing.launch.okay')
+        )
+        toggleOverlay(true)
+        return
+    }
     switchView(getCurrentView(), VIEWS.waiting, 500, 500, () => {
         ipcRenderer.send(
             MSFT_OPCODE.OPEN_LOGIN,
             loginOptionsViewOnLoginSuccess,
             loginOptionsViewOnLoginCancel
         )
-    })
-}
-
-loginOptionMojang.onclick = (e) => {
-    switchView(getCurrentView(), VIEWS.login, 500, 500, () => {
-        loginViewOnSuccess = loginOptionsViewOnLoginSuccess
-        loginViewOnCancel = loginOptionsViewOnLoginCancel
-        loginCancelEnabled(true)
     })
 }
 

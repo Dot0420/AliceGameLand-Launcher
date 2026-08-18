@@ -1,8 +1,8 @@
-// NOTE FOR THIRD-PARTY
-// REPLACE THIS CLIENT ID WITH YOUR APPLICATION ID.
-// SEE https://github.com/dscalzi/HeliosLauncher/blob/master/docs/MicrosoftAuth.md
-exports.AZURE_CLIENT_ID = '1ce6e35a-126f-48fd-97fb-54d143ac6d45'
-// SEE NOTE ABOVE.
+const authConfig = require('../config/auth.json')
+
+// ALICE_MS_CLIENT_ID is useful for local testing. Packaged releases should set
+// azureClientId in assets/config/auth.json before building.
+exports.AZURE_CLIENT_ID = process.env.ALICE_MS_CLIENT_ID || authConfig.azureClientId
 
 
 // Opcodes

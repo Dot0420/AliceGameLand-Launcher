@@ -1,0 +1,35 @@
+diff --git a/node_modules/helios-distribution-types/build/spec/type.d.ts b/node_modules/helios-distribution-types/build/spec/type.d.ts
+index e9c7565..0ee88de 100644
+--- a/node_modules/helios-distribution-types/build/spec/type.d.ts
++++ b/node_modules/helios-distribution-types/build/spec/type.d.ts
+@@ -3,6 +3,7 @@ export declare enum Type {
+     ForgeHosted = "ForgeHosted",
+     Forge = "Forge",
+     Fabric = "Fabric",
++    NeoForge = "NeoForge",
+     LiteLoader = "LiteLoader",
+     ForgeMod = "ForgeMod",
+     FabricMod = "FabricMod",
+diff --git a/node_modules/helios-distribution-types/build/spec/type.js b/node_modules/helios-distribution-types/build/spec/type.js
+index 8791720..0cde6e6 100644
+--- a/node_modules/helios-distribution-types/build/spec/type.js
++++ b/node_modules/helios-distribution-types/build/spec/type.js
+@@ -7,6 +7,7 @@ var Type;
+     Type["ForgeHosted"] = "ForgeHosted";
+     Type["Forge"] = "Forge";
+     Type["Fabric"] = "Fabric";
++    Type["NeoForge"] = "NeoForge";
+     Type["LiteLoader"] = "LiteLoader";
+     Type["ForgeMod"] = "ForgeMod";
+     Type["FabricMod"] = "FabricMod";
+@@ -34,6 +35,10 @@ exports.TypeMetadata = {
+         id: Type.Fabric,
+         defaultExtension: 'jar'
+     },
++    NeoForge: {
++        id: Type.NeoForge,
++        defaultExtension: 'jar'
++    },
+     LiteLoader: {
+         id: Type.LiteLoader,
+         defaultExtension: 'jar'

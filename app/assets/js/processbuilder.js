@@ -14,7 +14,7 @@ const logger = LoggerUtil.getLogger('ProcessBuilder')
 
 
 /**
- * Only forge and fabric are top level mod loaders.
+ * Forge, Fabric, and NeoForge are supported top-level mod loaders.
  * 
  * Forge 1.13+ launch logic is similar to fabrics, for now using usingFabricLoader flag to
  * change minor details when needed.
@@ -38,6 +38,7 @@ class ProcessBuilder {
 
         this.usingLiteLoader = false
         this.usingFabricLoader = false
+        this.usingNeoForgeLoader = false
         this.llPath = null
     }
     
@@ -46,12 +47,15 @@ class ProcessBuilder {
      */
     build(){
         fs.ensureDirSync(this.gameDir)
+        this.quarantineUnmanagedMods()
         const tempNativePath = path.join(os.tmpdir(), ConfigManager.getTempNativeFolder(), crypto.pseudoRandomBytes(16).toString('hex'))
         process.throwDeprecation = true
         this.setupLiteLoader()
         logger.info('Using liteloader:', this.usingLiteLoader)
         this.usingFabricLoader = this.server.modules.some(mdl => mdl.rawModule.type === Type.Fabric)
         logger.info('Using fabric loader:', this.usingFabricLoader)
+        this.usingNeoForgeLoader = this.server.modules.some(mdl => mdl.rawModule.type === Type.NeoForge)
+        logger.info('Using NeoForge loader:', this.usingNeoForgeLoader)
         const modObj = this.resolveModConfiguration(ConfigManager.getModConfiguration(this.server.rawServer.id).mods, this.server.modules)
         
         // Mod list below 1.13
@@ -108,6 +112,44 @@ class ProcessBuilder {
         })
 
         return child
+    }
+
+    quarantineUnmanagedMods(){
+        const modsDirectory = path.join(this.gameDir, 'mods')
+        if(!fs.existsSync(modsDirectory)){
+            return
+        }
+
+        const expected = new Set()
+        const collect = modules => {
+            for(const module of modules){
+                const modulePath = module.getPath()
+                if(module.rawModule.type === Type.File
+                    && path.dirname(modulePath) === modsDirectory
+                    && path.extname(modulePath).toLowerCase() === '.jar'){
+                    expected.add(path.basename(modulePath).toLowerCase())
+                }
+                collect(module.subModules)
+            }
+        }
+        collect(this.server.modules)
+
+        const quarantine = path.join(this.gameDir, 'mods-disabled', 'launcher-unmanaged')
+        for(const name of fs.readdirSync(modsDirectory)){
+            const source = path.join(modsDirectory, name)
+            if(path.extname(name).toLowerCase() !== '.jar'
+                || expected.has(name.toLowerCase())
+                || !fs.statSync(source).isFile()){
+                continue
+            }
+            fs.ensureDirSync(quarantine)
+            let destination = path.join(quarantine, name)
+            if(fs.existsSync(destination)){
+                destination = path.join(quarantine, `${Date.now()}-${name}`)
+            }
+            fs.moveSync(source, destination)
+            logger.warn(`Moved unmanaged mod to ${destination}`)
+        }
     }
 
     /**
@@ -525,7 +567,7 @@ class ProcessBuilder {
                             val = args[i].replace(argDiscovery, tempNativePath)
                             break
                         case 'launcher_name':
-                            val = args[i].replace(argDiscovery, 'Helios-Launcher')
+                            val = args[i].replace(argDiscovery, 'AliceGameLand-Launcher')
                             break
                         case 'launcher_version':
                             val = args[i].replace(argDiscovery, this.launcherVersion)
@@ -845,6 +887,10 @@ class ProcessBuilder {
                     const res = this._resolveModuleLibraries(mdl)
                     libs = {...libs, ...res}
                 }
+            } else if(type === Type.NeoForge && mdl.subModules.length > 0){
+                // The top-level artifact is the installer, not a runtime jar.
+                const res = this._resolveModuleLibraries(mdl)
+                libs = {...libs, ...res}
             }
         }
 

@@ -1,18 +1,19 @@
 {
-  "name": "helioslauncher",
-  "version": "2.2.1",
-  "productName": "Helios Launcher",
-  "description": "Modded Minecraft Launcher",
-  "author": "Daniel Scalzi (https://github.com/dscalzi/)",
+  "name": "alice-gameland-launcher",
+  "version": "1.0.0",
+  "productName": "앨리스의 게임랜드",
+  "description": "앨리스의 게임랜드 Minecraft 런처",
+  "author": "JooHwan Kim <gptnr2140@gmail.com>",
   "license": "UNLICENSED",
-  "homepage": "https://github.com/dscalzi/HeliosLauncher",
+  "homepage": "https://github.com/Dot0420/AliceGameLand-Launcher",
   "bugs": {
-    "url": "https://github.com/dscalzi/HeliosLauncher/issues"
+    "url": "https://github.com/Dot0420/AliceGameLand-Launcher/issues"
   },
   "private": true,
   "main": "index.js",
   "scripts": {
     "start": "electron .",
+    "postinstall": "patch-package",
     "dist": "electron-builder build",
     "dist:win": "npm run dist -- -w",
     "dist:mac": "npm run dist -- -m",
@@ -43,10 +44,11 @@
     "@stylistic/eslint-plugin": "^5.6.1",
     "electron": "^39.2.7",
     "electron-builder": "^26.4.0",
-    "eslint": "^9.39.2"
+    "eslint": "^9.39.2",
+    "patch-package": "^8.0.0"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/dscalzi/HeliosLauncher.git"
+    "url": "git+https://github.com/Dot0420/AliceGameLand-Launcher.git"
   }
 }

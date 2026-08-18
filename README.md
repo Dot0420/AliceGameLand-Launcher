@@ -1,12 +1,14 @@
-<p align="center"><img src="./app/assets/images/SealCircle.png" width="150px" height="150px" alt="aventium softworks"></p>
+<p align="center"><img src="./app/assets/images/SealCircle.png" width="150px" height="150px" alt="앨리스의 게임랜드"></p>
 
-<h1 align="center">Helios Launcher</h1>
+<h1 align="center">앨리스의 게임랜드 런처</h1>
 
-<em><h5 align="center">(formerly Electron Launcher)</h5></em>
+<p align="center"><strong>앨리스의 게임랜드 전용 포크</strong></p>
 
-[<p align="center"><img src="https://img.shields.io/github/actions/workflow/status/dscalzi/HeliosLauncher/build.yml?branch=master&style=for-the-badge" alt="gh actions">](https://github.com/dscalzi/HeliosLauncher/actions) [<img src="https://img.shields.io/github/downloads/dscalzi/HeliosLauncher/total.svg?style=for-the-badge" alt="downloads">](https://github.com/dscalzi/HeliosLauncher/releases) <img src="https://forthebadge.com/images/badges/winter-is-coming.svg"  height="28px" alt="winter-is-coming"></p>
+Microsoft 로그인 활성화 전 `app/assets/config/auth.json`의 `azureClientId`를 본인 소유 Entra 애플리케이션 ID로 교체해야 합니다. 로컬 테스트에서는 `ALICE_MS_CLIENT_ID` 환경 변수로 덮어쓸 수 있습니다.
 
-<p align="center">Join modded servers without worrying about installing Java, Forge, or other mods. We'll handle that for you.</p>
+<p align="center"><a href="https://github.com/Dot0420/AliceGameLand-Launcher/actions"><img src="https://img.shields.io/github/actions/workflow/status/Dot0420/AliceGameLand-Launcher/build.yml?style=for-the-badge" alt="GitHub Actions"></a> <a href="https://github.com/Dot0420/AliceGameLand-Launcher/releases"><img src="https://img.shields.io/github/downloads/Dot0420/AliceGameLand-Launcher/total.svg?style=for-the-badge" alt="다운로드"></a></p>
+
+<p align="center">Minecraft 26.2와 NeoForge 26.2.0.59를 자동 설치하고 앨리스 서버의 모드와 게임 파일을 관리합니다.</p>
 
 ![Screenshot 1](https://i.imgur.com/6o7SmH6.png)
 ![Screenshot 2](https://i.imgur.com/x3B34n1.png)
@@ -39,18 +41,18 @@ This is not an exhaustive list. Download and install the launcher to gauge all i
 
 ## Downloads
 
-You can download from [GitHub Releases](https://github.com/dscalzi/HeliosLauncher/releases)
+You can download from [GitHub Releases](https://github.com/Dot0420/AliceGameLand-Launcher/releases)
 
 #### Latest Release
 
-[![](https://img.shields.io/github/release/dscalzi/HeliosLauncher.svg?style=flat-square)](https://github.com/dscalzi/HeliosLauncher/releases/latest)
+[![](https://img.shields.io/github/release/Dot0420/AliceGameLand-Launcher.svg?style=flat-square)](https://github.com/Dot0420/AliceGameLand-Launcher/releases/latest)
 
 #### Latest Pre-Release
-[![](https://img.shields.io/github/release/dscalzi/HeliosLauncher/all.svg?style=flat-square)](https://github.com/dscalzi/HeliosLauncher/releases)
+[![](https://img.shields.io/github/release/Dot0420/AliceGameLand-Launcher/all.svg?style=flat-square)](https://github.com/Dot0420/AliceGameLand-Launcher/releases)
 
 **Supported Platforms**
 
-If you download from the [Releases](https://github.com/dscalzi/HeliosLauncher/releases) tab, select the installer for your system.
+If you download from the [Releases](https://github.com/Dot0420/AliceGameLand-Launcher/releases) tab, select the Windows installer.
 
 | Platform | File |
 | -------- | ---- |
@@ -91,7 +93,7 @@ This section details the setup of a basic developmentment environment.
 **Clone and Install Dependencies**
 
 ```console
-> git clone https://github.com/dscalzi/HeliosLauncher.git
+> git clone https://github.com/Dot0420/AliceGameLand-Launcher.git
 > cd HeliosLauncher
 > npm install
 ```

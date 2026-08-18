@@ -29,6 +29,7 @@ const {
 
 // Internal Requirements
 const DiscordWrapper          = require('./assets/js/discordwrapper')
+const NeoForgeInstaller       = require('./assets/js/neoforgeinstaller')
 const ProcessBuilder          = require('./assets/js/processbuilder')
 
 // Launch Elements
@@ -538,6 +539,15 @@ async function dlAsync(login = true) {
     fullRepairModule.destroyReceiver()
 
     setLaunchDetails(Lang.queryJS('landing.dlAsync.preparingToLaunch'))
+
+    try {
+        setLaunchDetails(Lang.queryJS('landing.dlAsync.installingNeoForge'))
+        await NeoForgeInstaller.ensureInstalled(serv)
+    } catch(err) {
+        loggerLaunchSuite.error('Failed to install the NeoForge client patch.', err)
+        showLaunchFailure(Lang.queryJS('landing.dlAsync.errorDuringLaunchTitle'), err.message)
+        return
+    }
 
     const mojangIndexProcessor = new MojangIndexProcessor(
         ConfigManager.getCommonDirectory(),
