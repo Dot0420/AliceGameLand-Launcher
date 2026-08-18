@@ -1,6 +1,6 @@
 appId: 'kr.dreamcraft.alicegameland.launcher'
 productName: '앨리스의 게임랜드'
-artifactName: '${productName}-setup-${version}.${ext}'
+artifactName: 'alice-gameland-launcher-setup-${version}.${ext}'
 
 copyright: 'Copyright © 2026 JooHwan Kim. Helios Launcher © Daniel Scalzi.'
 
