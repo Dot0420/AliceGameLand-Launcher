@@ -3967,7 +3967,7 @@ input:checked + .toggleSwitchSlider:before {
     animation: rotating 10s linear infinite;
 }
 /* Alice GameLand does not expose upstream news or social-media shortcuts. */
-#landingContainer > #lower > #center,
+#landingContainer > #lower > #center #content,
 #newsContainer,
 #mediaContent > .mediaDivider,
 #externalMedia {
