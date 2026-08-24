@@ -570,7 +570,17 @@ async function dlAsync(login = true) {
         // const SERVER_JOINED_REGEX = /\[.+\]: \[CHAT\] [a-zA-Z0-9_]{1,16} joined the game/
         const SERVER_JOINED_REGEX = new RegExp(`\\[.+\\]: \\[CHAT\\] ${authUser.displayName} joined the game`)
 
+        let launchResetTimer = null
+        let launchAreaReset = false
         const onLoadComplete = () => {
+            if(launchAreaReset){
+                return
+            }
+            launchAreaReset = true
+            if(launchResetTimer != null){
+                clearTimeout(launchResetTimer)
+                launchResetTimer = null
+            }
             toggleLaunchArea(false)
             if(hasRPC){
                 DiscordWrapper.updateDetails(Lang.queryJS('landing.discord.loading'))
@@ -589,7 +599,10 @@ async function dlAsync(login = true) {
             if(GAME_LAUNCH_REGEX.test(data.trim())){
                 const diff = Date.now()-start
                 if(diff < MIN_LINGER) {
-                    setTimeout(onLoadComplete, MIN_LINGER-diff)
+                    if(launchResetTimer != null){
+                        clearTimeout(launchResetTimer)
+                    }
+                    launchResetTimer = setTimeout(onLoadComplete, MIN_LINGER-diff)
                 } else {
                     onLoadComplete()
                 }
@@ -623,6 +636,7 @@ async function dlAsync(login = true) {
             proc.stderr.on('data', gameErrorListener)
 
             setLaunchDetails(Lang.queryJS('landing.dlAsync.doneEnjoyServer'))
+            launchResetTimer = setTimeout(onLoadComplete, MIN_LINGER)
 
             // Init Discord Hook
             if(distro.rawDistribution.discord != null && serv.rawServer.discord != null){
