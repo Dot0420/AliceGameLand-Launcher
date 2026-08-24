@@ -758,9 +758,14 @@ class ProcessBuilder {
     _resolveMojangLibraries(tempNativePath){
         const nativesRegex = /.+:natives-([^-]+)(?:-(.+))?/
         const libs = {}
+        const jvmArgs = this.vanillaManifest.arguments?.jvm ?? []
+        const usesSegmentedNativeDirectories = jvmArgs.some(arg =>
+            typeof arg === 'string' && arg.includes('${natives_directory}/java')
+        )
+        const nativeLibraryPath = usesSegmentedNativeDirectories ? path.join(tempNativePath, 'java') : tempNativePath
 
         const libArr = this.vanillaManifest.libraries
-        fs.ensureDirSync(tempNativePath)
+        fs.ensureDirSync(nativeLibraryPath)
         for(let i=0; i<libArr.length; i++){
             const lib = libArr[i]
             if(isLibraryCompatible(lib.rules, lib.natives)){
@@ -792,11 +797,9 @@ class ProcessBuilder {
 
                         // Extract the file.
                         if(!shouldExclude){
-                            fs.writeFile(path.join(tempNativePath, fileName), zipEntries[i].getData(), (err) => {
-                                if(err){
-                                    logger.error('Error while extracting native library:', err)
-                                }
-                            })
+                            const nativePath = path.join(nativeLibraryPath, fileName)
+                            fs.ensureDirSync(path.dirname(nativePath))
+                            fs.writeFileSync(nativePath, zipEntries[i].getData())
                         }
 
                     }
@@ -839,15 +842,11 @@ class ProcessBuilder {
                             }
                         })
 
-                        const extractName = fileName.includes('/') ? fileName.substring(fileName.lastIndexOf('/')) : fileName
+                        const extractName = path.basename(fileName)
 
                         // Extract the file.
                         if(!shouldExclude){
-                            fs.writeFile(path.join(tempNativePath, extractName), zipEntries[i].getData(), (err) => {
-                                if(err){
-                                    logger.error('Error while extracting native library:', err)
-                                }
-                            })
+                            fs.writeFileSync(path.join(nativeLibraryPath, extractName), zipEntries[i].getData())
                         }
 
                     }
