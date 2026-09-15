@@ -25,7 +25,13 @@ jobs:
       - name: Lint
         run: npm run lint
 
+      - name: Prepare bundled Temurin JDK 25
+        run: npm run runtime:prepare
+
+      - name: Validate bundled Java
+        run: .\runtime\windows-x64\bin\java.exe -version
+
       - name: Build and publish Windows release
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: npm run dist:win -- --publish always
+        run: npm run dist -- -w --publish always

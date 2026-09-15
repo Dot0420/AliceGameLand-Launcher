@@ -156,6 +156,10 @@ desc = "An unknown error has occurred. Please see the console for details."
 pleaseWait = "Please wait.."
 failureTitle = "Error During Launch"
 failureText = "See console (CTRL + Shift + i) for more details."
+bundledJavaMissingTitle = "Bundled Java Not Found"
+bundledJavaMissingText = "The launcher installation is damaged. Reinstall the latest launcher version."
+bundledJavaInvalidTitle = "Bundled Java Error"
+bundledJavaInvalidText = "The bundled Java 25 runtime is damaged. Reinstall the latest launcher version."
 okay = "Okay"
 
 [js.landing.selectedAccount]
@@ -261,6 +265,8 @@ mainServer = "Main Server"
 
 [js.settings.java]
 selectedJava = "Selected: Java {version} ({vendor})"
+bundledJava = "Bundled Java {version} ({vendor})"
+bundledJavaMissing = "The bundled Java runtime could not be found."
 invalidSelection = "Invalid Selection"
 requiresJava = "Requires Java {major} x64."
 availableOptions = "Available Options for Java {major} (HotSpot VM)"

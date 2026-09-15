@@ -1337,13 +1337,18 @@ function populateMemoryStatus(){
  */
 async function populateJavaExecDetails(execPath){
     const server = (await DistroAPI.getDistribution()).getServerById(ConfigManager.getSelectedServer())
-
-    const details = await validateSelectedJvm(ensureJavaDirIsRoot(execPath), server.effectiveJavaOptions.supported)
+    const bundledExec = BundledJava.getExecutable()
+    const effectiveExec = bundledExec ?? execPath
+    const details = effectiveExec == null || effectiveExec.length === 0
+        ? null
+        : await validateSelectedJvm(ensureJavaDirIsRoot(effectiveExec), server.effectiveJavaOptions.supported)
 
     if(details != null) {
-        settingsJavaExecDetails.innerHTML = Lang.queryJS('settings.java.selectedJava', { version: details.semverStr, vendor: details.vendor })
+        settingsJavaExecDetails.innerHTML = bundledExec == null
+            ? Lang.queryJS('settings.java.selectedJava', { version: details.semverStr, vendor: details.vendor })
+            : Lang.queryJS('settings.java.bundledJava', { version: details.semverStr, vendor: details.vendor })
     } else {
-        settingsJavaExecDetails.innerHTML = Lang.queryJS('settings.java.invalidSelection')
+        settingsJavaExecDetails.innerHTML = Lang.queryJS('settings.java.bundledJavaMissing')
     }
 }
 
@@ -1385,6 +1390,16 @@ function bindMinMaxRam(server) {
  */
 async function prepareJavaTab(){
     const server = (await DistroAPI.getDistribution()).getServerById(ConfigManager.getSelectedServer())
+    const bundledExec = BundledJava.getExecutable()
+    if(process.platform === 'win32' && process.arch === 'x64') {
+        settingsJavaExecSel.disabled = true
+        settingsJavaExecVal.value = bundledExec ?? ''
+        if(bundledExec != null && ConfigManager.getJavaExecutable(server.rawServer.id) !== bundledExec) {
+            ConfigManager.setJavaExecutable(server.rawServer.id, bundledExec)
+            ConfigManager.save()
+        }
+        await populateJavaExecDetails(settingsJavaExecVal.value)
+    }
     bindMinMaxRam(server)
     bindRangeSlider(server)
     populateMemoryStatus()

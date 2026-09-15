@@ -8,10 +8,12 @@ asar: true
 compression: 'maximum'
 
 files:
-  - '!{dist,.gitignore,.vscode,docs,dev-app-update.yml,.nvmrc,eslint.config.mjs}'
+  - '!{dist,runtime,.runtime-cache,.gitignore,.vscode,docs,dev-app-update.yml,.nvmrc,eslint.config.mjs}'
 
 extraResources:
   - 'libraries'
+  - from: 'runtime/windows-x64'
+    to: 'runtime/windows-x64'
 
 # Windows Configuration
 win: 
