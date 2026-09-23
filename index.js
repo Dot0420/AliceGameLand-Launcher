@@ -2,7 +2,7 @@ const remoteMain = require('@electron/remote/main')
 remoteMain.initialize()
 
 // Requirements
-const { app, BrowserWindow, ipcMain, Menu, shell } = require('electron')
+const { app, BrowserWindow, ipcMain, Menu, screen, shell } = require('electron')
 const autoUpdater                       = require('electron-updater').autoUpdater
 const ejse                              = require('ejs-electron')
 const isDev                             = require('./app/assets/js/isdev')
@@ -222,10 +222,11 @@ ipcMain.on(MSFT_OPCODE.OPEN_LOGOUT, (ipcEvent, uuid, isLastAccount) => {
 let win
 
 function createWindow() {
+    const { width: workAreaWidth, height: workAreaHeight } = screen.getPrimaryDisplay().workAreaSize
 
     win = new BrowserWindow({
-        width: 980,
-        height: 552,
+        width: Math.min(1280, workAreaWidth),
+        height: Math.min(720, workAreaHeight),
         icon: getPlatformIcon('SealCircle'),
         frame: false,
         webPreferences: {
