@@ -26,6 +26,54 @@ const VIEWS = {
 // The currently shown view container.
 let currentView
 
+let uiAudioContext
+let uiSoundAvailable = true
+let lastUiSoundAt = 0
+
+/** Play a quiet click only for actual launcher button interactions. */
+function playUiButtonSound(){
+    if(!uiSoundAvailable || !window.AudioContext) return
+
+    try {
+        if(!uiAudioContext || uiAudioContext.state === 'closed'){
+            uiAudioContext = new window.AudioContext()
+        }
+        if(uiAudioContext.state === 'suspended'){
+            void uiAudioContext.resume().catch(() => {
+                uiSoundAvailable = false
+            })
+        }
+
+        const now = uiAudioContext.currentTime
+        const tone = uiAudioContext.createOscillator()
+        const volume = uiAudioContext.createGain()
+        tone.type = 'triangle'
+        tone.frequency.setValueAtTime(570, now)
+        tone.frequency.exponentialRampToValueAtTime(410, now + 0.07)
+        volume.gain.setValueAtTime(0.0001, now)
+        volume.gain.exponentialRampToValueAtTime(0.035, now + 0.006)
+        volume.gain.exponentialRampToValueAtTime(0.0001, now + 0.085)
+        tone.connect(volume)
+        volume.connect(uiAudioContext.destination)
+        tone.start(now)
+        tone.stop(now + 0.09)
+    } catch {
+        // Audio is optional; do not interrupt login or launching without an output device.
+        uiSoundAvailable = false
+    }
+}
+
+document.addEventListener('click', (event) => {
+    if(!event.isTrusted || !(event.target instanceof Element)) return
+
+    const control = event.target.closest('button, a[href], input[type="checkbox"], #image_seal_container[update]')
+    if(!control || control.disabled || !control.closest('#main, #overlayContainer')) return
+    if(event.timeStamp - lastUiSoundAt < 80) return
+
+    lastUiSoundAt = event.timeStamp
+    playUiButtonSound()
+}, true)
+
 /**
  * Switch launcher views.
  * 
@@ -97,9 +145,7 @@ async function showMainUI(data){
         }
 
         setTimeout(() => {
-            $('#loadingContainer').fadeOut(500, () => {
-                $('#loadSpinnerImage').removeClass('rotating')
-            })
+            $('#loadingContainer').fadeOut(500)
         }, 250)
         
     }, 750)
