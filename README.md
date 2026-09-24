@@ -17,8 +17,8 @@ Microsoft 로그인 활성화 전 `app/assets/config/auth.json`의 `azureClientI
 
 * 🔒 Full account management.
   * Add multiple accounts and easily switch between them.
-  * Microsoft (OAuth 2.0) + Mojang (Yggdrasil) authentication fully supported.
-  * Credentials are never stored and transmitted directly to Mojang.
+  * Microsoft (OAuth 2.0) authentication supported.
+  * Mojang account login is no longer offered; existing Mojang account records are backed up before removal.
 * 📂 Efficient asset management.
   * Receive client updates as soon as we release them.
   * Files are validated before launch. Corrupt or incorrect files will be redownloaded.

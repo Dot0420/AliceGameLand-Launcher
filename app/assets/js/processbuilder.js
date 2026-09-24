@@ -46,6 +46,9 @@ class ProcessBuilder {
      * Convienence method to run the functions typically used to build a process.
      */
     build(){
+        if(this.authUser?.type !== 'microsoft'){
+            throw new Error('A Microsoft account is required to launch Minecraft.')
+        }
         fs.ensureDirSync(this.gameDir)
         this.quarantineUnmanagedMods()
         const tempNativePath = path.join(os.tmpdir(), ConfigManager.getTempNativeFolder(), crypto.pseudoRandomBytes(16).toString('hex'))
@@ -552,7 +555,7 @@ class ProcessBuilder {
                             val = this.authUser.accessToken
                             break
                         case 'user_type':
-                            val = this.authUser.type === 'microsoft' ? 'msa' : 'mojang'
+                            val = 'msa'
                             break
                         case 'version_type':
                             val = this.vanillaManifest.type
@@ -636,7 +639,7 @@ class ProcessBuilder {
                         val = this.authUser.accessToken
                         break
                     case 'user_type':
-                        val = this.authUser.type === 'microsoft' ? 'msa' : 'mojang'
+                        val = 'msa'
                         break
                     case 'user_properties': // 1.8.9 and below.
                         val = '{}'

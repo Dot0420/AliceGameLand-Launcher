@@ -342,15 +342,6 @@ settingsNavDone.onclick = () => {
 const msftLoginLogger = LoggerUtil.getLogger('Microsoft Login')
 const msftLogoutLogger = LoggerUtil.getLogger('Microsoft Logout')
 
-// Bind the add mojang account button.
-document.getElementById('settingsAddMojangAccount').onclick = (e) => {
-    switchView(getCurrentView(), VIEWS.login, 500, 500, () => {
-        loginViewOnCancel = VIEWS.settings
-        loginViewOnSuccess = VIEWS.settings
-        loginCancelEnabled(true)
-    })
-}
-
 // Bind the add microsoft account button.
 document.getElementById('settingsAddMicrosoftAccount').onclick = (e) => {
     switchView(getCurrentView(), VIEWS.waiting, 500, 500, () => {
@@ -429,11 +420,14 @@ ipcRenderer.on(MSFT_OPCODE.REPLY_LOGIN, (_, ...arguments_) => {
                     } else {
                         // Uh oh.
                         msftLoginLogger.error('Unhandled error during login.', displayableError)
-                        actualDisplayableError = Lang.queryJS('login.error.unknown')
+                        actualDisplayableError = {
+                            title: Lang.queryJS('settings.msftLogin.errorTitle'),
+                            desc: Lang.queryJS('settings.msftLogin.errorMessage')
+                        }
                     }
 
                     switchView(getCurrentView(), viewOnClose, 500, 500, () => {
-                        setOverlayContent(actualDisplayableError.title, actualDisplayableError.desc, Lang.queryJS('login.tryAgain'))
+                        setOverlayContent(actualDisplayableError.title, actualDisplayableError.desc, Lang.queryJS('settings.msftLogin.okButton'))
                         setOverlayHandler(() => {
                             toggleOverlay(false)
                         })
@@ -511,32 +505,10 @@ let msAccDomElementCache
 function processLogOut(val, isLastAccount){
     const parent = val.closest('.settingsAuthAccount')
     const uuid = parent.getAttribute('uuid')
-    const prevSelAcc = ConfigManager.getSelectedAccount()
-    const targetAcc = ConfigManager.getAuthAccount(uuid)
-    if(targetAcc.type === 'microsoft') {
-        msAccDomElementCache = parent
-        switchView(getCurrentView(), VIEWS.waiting, 500, 500, () => {
-            ipcRenderer.send(MSFT_OPCODE.OPEN_LOGOUT, uuid, isLastAccount)
-        })
-    } else {
-        AuthManager.removeMojangAccount(uuid).then(() => {
-            if(!isLastAccount && uuid === prevSelAcc.uuid){
-                const selAcc = ConfigManager.getSelectedAccount()
-                refreshAuthAccountSelected(selAcc.uuid)
-                updateSelectedAccount(selAcc)
-                validateSelectedAccount()
-            }
-            if(isLastAccount) {
-                loginOptionsCancelEnabled(false)
-                loginOptionsViewOnLoginSuccess = VIEWS.settings
-                loginOptionsViewOnLoginCancel = VIEWS.loginOptions
-                switchView(getCurrentView(), VIEWS.loginOptions)
-            }
-        })
-        $(parent).fadeOut(250, () => {
-            parent.remove()
-        })
-    }
+    msAccDomElementCache = parent
+    switchView(getCurrentView(), VIEWS.waiting, 500, 500, () => {
+        ipcRenderer.send(MSFT_OPCODE.OPEN_LOGOUT, uuid, isLastAccount)
+    })
 }
 
 // Bind reply for Microsoft Logout.
@@ -619,7 +591,6 @@ function refreshAuthAccountSelected(uuid){
 }
 
 const settingsCurrentMicrosoftAccounts = document.getElementById('settingsCurrentMicrosoftAccounts')
-const settingsCurrentMojangAccounts = document.getElementById('settingsCurrentMojangAccounts')
 
 /**
  * Add auth account elements for each one stored in the authentication database.
@@ -633,7 +604,6 @@ function populateAuthAccounts(){
     const selectedUUID = ConfigManager.getSelectedAccount().uuid
 
     let microsoftAuthAccountStr = ''
-    let mojangAuthAccountStr = ''
 
     authKeys.forEach((val) => {
         const acc = authAccounts[val]
@@ -662,16 +632,11 @@ function populateAuthAccounts(){
             </div>
         </div>`
 
-        if(acc.type === 'microsoft') {
-            microsoftAuthAccountStr += accHtml
-        } else {
-            mojangAuthAccountStr += accHtml
-        }
+        microsoftAuthAccountStr += accHtml
 
     })
 
     settingsCurrentMicrosoftAccounts.innerHTML = microsoftAuthAccountStr
-    settingsCurrentMojangAccounts.innerHTML = mojangAuthAccountStr
 }
 
 /**

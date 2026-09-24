@@ -3,8 +3,6 @@ const loginOptionMicrosoft = document.getElementById('loginOptionMicrosoft')
 const loginOptionsCancelButton = document.getElementById('loginOptionCancelButton')
 const { AZURE_CLIENT_ID } = require('./assets/js/ipcconstants')
 
-let loginOptionsCancellable = false
-
 let loginOptionsViewOnLoginSuccess
 let loginOptionsViewOnLoginCancel
 let loginOptionsViewOnCancel
@@ -39,10 +37,6 @@ loginOptionMicrosoft.onclick = (e) => {
 
 loginOptionsCancelButton.onclick = (e) => {
     switchView(getCurrentView(), loginOptionsViewOnCancel, 500, 500, () => {
-        // Clear login values (Mojang login)
-        // No cleanup needed for Microsoft.
-        loginUsername.value = ''
-        loginPassword.value = ''
         if(loginOptionsViewCancelHandler != null){
             loginOptionsViewCancelHandler()
             loginOptionsViewCancelHandler = null
