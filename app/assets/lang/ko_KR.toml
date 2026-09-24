@@ -112,8 +112,8 @@ continueButton = "계속"
 
 
 [js.discord]
-waiting = "클라이언트 대기 중.."
-state = "Server: {shortId}"
+waiting = "게임 시작 중.."
+state = "서버: {shortId}"
 
 [js.index]
 microsoftLoginTitle = "Microsoft 로그인"
@@ -184,7 +184,7 @@ checking = "뉴스 확인 중"
 [js.landing.discord]
 loading = "게임 로딩 중.."
 joining = "서버 접속 중.."
-joined = "Mystic Red Space"
+joined = "게임 플레이 중"
 
 [js.overlay]
 dismiss = "닫기"
