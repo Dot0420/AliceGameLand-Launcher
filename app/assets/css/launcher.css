@@ -3683,7 +3683,7 @@ input:checked + .toggleSwitchSlider:before {
     display: flex;
     justify-content: flex-start;
     align-items: center;
-    opacity: 0.85;
+    opacity: 0.45;
     transition: 0.25s ease;
     cursor: pointer;
     position: relative;
